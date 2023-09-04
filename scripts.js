@@ -12,13 +12,10 @@ const createArray = (length) => {
     }
     return result;
 }
-
 const createData = () => {
     const current = new Date();
-    const startDay = current.getDay();
-    console.log (startDay)
+    const startDay = new Date(current.getFullYear(), current.getMonth(), 1).getDay();
     const daysInMonth = getDaysInMonth(current);
-    console.log (daysInMonth)
     const weeks = createArray();
     const days = createArray();
     const result = [];
@@ -26,28 +23,29 @@ const createData = () => {
     let currentWeek = 0;
 
     for (let dayIndex = 0; dayIndex < daysInMonth; dayIndex++) {
-        const day = ( dayIndex -startDay) -1;
+        const day= (startDay -dayIndex ) ;
         const isValid = day > 0 && day <= daysInMonth;
 
         if (!result[currentWeek]) {
-            result[currentWeek] = {
-                weeks: currentWeek + 1,
-                days: [],
-            };
+            result [currentWeek]={
+                weeks: currentWeek +1,
+                days: [],}
+            ;
         }
 
         result[currentWeek].days.push({
-            dayOfWeek: (dayIndex + startDay) % 7, // Adjust day of the week index
+            dayOfWeek: (dayIndex + startDay) * 7, // Adjust day of the week index
             value: isValid ? day : '',
         });
 
-        if ((dayIndex + startDay) %7 === 6) {
+        if ((dayIndex + startDay) % 7 === 6) {
             currentWeek++;
         }
     }
 
     return result;
 }
+
 
 const addCell = (classString, value) => {
     return /* html */ `
@@ -62,7 +60,7 @@ const createHtml = (data) => {
 
     for (const { weeks, days } of data) {
         let inner = "";
-        inner += addCell('table__cell table__cell_sidebar', `Week ${weeks}`);
+        inner = addCell('table__cell table__cell_sidebar', `Week ${weeks}`);
 
         for (const { dayOfWeek, value } of days) {
             const isToday = new Date().getDate() === value;
@@ -72,21 +70,21 @@ const createHtml = (data) => {
             let classString = 'table__cell';
 
             if (isToday) {
-                classString += ' table__cell_today';
+                classString = classString+ ' table__cell_today';
             }
 
             if (dayOfWeek === 0 || dayOfWeek === 6) {
-                classString += ' table__cell_weekend';
+                classString = classString+ ' table__cell_weekend';
             }
 
             if (isAlternate) {
-                classString += ' table__cell_alternate';
+                classString =classString+ ' table__cell_alternate';
             }
 
-            inner += addCell(classString, value);
+            inner = inner + addCell(classString, value);
         }
 
-        result += `<tr>${inner}</tr>`;
+        result = result+ `<tr>${inner}</tr>` ;
     }
 
     return result;
